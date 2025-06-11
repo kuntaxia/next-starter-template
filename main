@@ -1,0 +1,34 @@
+addEventListener('fetch', event => {
+  event.respondWith(handleRequest(event.request))
+})
+
+async function handleRequest(request) {
+  const referer = request.headers.get('Referer') || ''
+  const allowList = ['google.', 'bing.', 'yandex.']
+
+  const fromAllowedSearchEngine = allowList.some(engine => referer.includes(engine))
+
+  if (!fromAllowedSearchEngine) {
+    const host = request.headers.get('host')
+    const searchURL = 'https://www.google.com/search?q=site:' + host
+    return Response.redirect(searchURL, 302)
+  }
+
+  return fetch(request)
+}
+
+addEventListener('fetch', event => {
+  event.respondWith(handleRequest(event.request))
+})
+
+async function handleRequest(request) {
+  const referer = request.headers.get('Referer') || ''
+  const allowList = ['google.', 'bing.', 'yandex.']
+  const fromAllowedSearchEngine = allowList.some(engine => referer.includes(engine))
+
+  if (!fromAllowedSearchEngine) {
+    return Response.redirect('https://www.google.com', 302)
+  }
+
+  return fetch(request)
+}
